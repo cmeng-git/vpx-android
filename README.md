@@ -1,16 +1,13 @@
-## Build libvpx for iOS and Android<table>
+## Build libvpx for Android
 ####
+<table>
 <thead>
-<tr><td>library</td><td>version</td><td>platform support</td><td>arch support</td><td>pull commit</td></tr>
+<tr><td>library</td><td>version</td><td>platform support</td><td>arch support</td></tr>
 </thead>
-<tr><td>libvpx</td><td>1.7.0</td><td>ios</td><td>armv7s armv7 i386 x86_64 arm64</td><td>aae1672</td></tr>
-<tr><td></td><td></td><td>android</td><td>armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64</td><td>aae1672</td></tr>
-<tr><td>curl</td><td>7.53.1</td><td>ios</td><td>armv7s armv7 i386 x86_64 arm64</td><td>aae1672</td></tr>
-<tr><td></td><td></td><td>android</td><td>armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64</td><td>aae1672</td></tr>
+<tr><td>libvpx</td><td>1.7.0</td><td>android</td><td>armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64</td></tr>
 </table>
 
 ### Build For Android
-
 - Use Android NDK: android-ndk-r15c
 - git clone vpx-android directory into your linux working directory.
 - When you first build-libvpx4android.sh, it pull the latest defined libvpx source from github.
@@ -21,16 +18,16 @@ All the built libvpx.a and *.h will be placed in the ./output/<ABI>/lib and ./ou
 
 ```
 cd vpx-android
-sh ./build-libvpx4android.sh android  # for armeabi
-sh ./build-libvpx4android.sh android-armeabi #for armeabi-v7a
-sh ./build-libvpx4android.sh android64-arm64 #for arm64_v8a
-sh ./build-libvpx4android.sh android-x86  #for x86
-sh ./build-libvpx4android.sh android64  #for x86_64
-sh ./build-libvpx4android.sh android-mips  #for mips
-sh ./build-libvpx4android.sh android64-mips64 #for mips64
+./build-libvpx4android.sh android  # for armeabi
+./build-libvpx4android.sh android-armeabi #for armeabi-v7a
+./build-libvpx4android.sh android64-arm64 #for arm64_v8a
+./build-libvpx4android.sh android-x86  #for x86
+./build-libvpx4android.sh android64  #for x86_64
+./build-libvpx4android.sh android-mips  #for mips
+./build-libvpx4android.sh android64-mips64 #for mips64
 ```
 
-Copy `lib/armeabi`, `lib/armeabi-v7a` and `lib/x86` directories to the android project
+Copy `lib/armeabi`, `lib/armeabi-v7a` and `lib/x86` etc directories to the android project
 jni directory e.g. aTalk/jni/vpx
 
 Similarly copy all the include directories to the android project jni directory.
