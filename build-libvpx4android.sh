@@ -15,44 +15,44 @@
 # limitations under the License.
 
 set -u
-source ./_shared.sh
+. _shared.sh
 
 # Setup architectures, library name and other vars + cleanup from previous runs
-LIB_GIT="v1.7.0"
 LIB_VPX="libvpx-1.7.0"
-LIB_DEST_DIR=${BASEDIR}/libs
-
-#[ -d ${LIB_DEST_DIR} ] && rm -rf ${LIB_DEST_DIR}
-[ -f "${LIB_GIT}.tar.gz" ] || wget https://github.com/webmproject/libvpx/archive/${LIB_GIT}.tar.gz;
+# ./init_libvpx.sh
 
 # Unarchive library, then configure and make for specified architectures
 configure_make() {
-  ARCH=$1; ABI=$2;
-
-# rm -rf "${LIB_VPX}"
-# tar xfz "${LIB_GIT}.tar.gz" "${LIB_VPX}"
-[ -d "${LIB_VPX}" ] || tar xfz "${LIB_GIT}.tar.gz" "${LIB_VPX}";
-
   pushd "${LIB_VPX}"
   make clean
 
+  ABI=$1;
   configure $*
 
-  if [ "$ARCH" == "android" ]; then
+  case $ABI in
+    # libvpx does not provide armv5 build option
+    armeabi)
       TARGET="armv7-android-gcc --disable-neon --disable-neon-asm"
-  elif [ "$ARCH" == "android-armeabi" ]; then
+    ;;
+    armeabi-v7a)
       TARGET="armv7-android-gcc"
-  elif [ "$ARCH" == "android64-aarch64" ]; then
+    ;;
+    arm64-v8a)
       TARGET="arm64-android-gcc"
-  elif [ "$ARCH" == "android-x86" ]; then
+    ;;
+    x86)
       TARGET="x86-android-gcc"
-  elif [ "$ARCH" == "android64" ]; then
+    ;;
+    x86_64)
       TARGET="x86_64-android-gcc"
-  elif [ "$ARCH" == "android-mips" ]; then
+    ;;
+    mips)
       TARGET="mips32-linux-gcc"
-  elif [ "$ARCH" == "android-mips64" ]; then
+    ;;
+    mips64)
       TARGET="mips64-linux-gcc"
-  fi;
+    ;;
+  esac
 
   # --sdk-path=${TOOLCHAIN_PREFIX} must use ${NDK} actual path else cannot find CC for arm64-android-gcc
   # https://bugs.chromium.org/p/webm/issues/detail?id=1476
@@ -71,8 +71,9 @@ configure_make() {
     --disable-debug \
     --disable-unit-tests \
     --enable-realtime-only \
-    --disable-webm-io \
-#    --extra-cflags="-isystem ${NDK}/sysroot/usr/include/${NDK_ABIARCH} -isystem ${NDK}/sysroot/usr/include"
+    --disable-webm-io || return 0
+
+#   --extra-cflags="-isystem ${NDK}/sysroot/usr/include/${NDK_ABIARCH} -isystem ${NDK}/sysroot/usr/include"
 
   if make -j4; then
     make install
@@ -91,12 +92,12 @@ configure_make() {
 
 }
 
-for ((i=0; i < ${#ARCHS[@]}; i++))
+for ((i=0; i < ${#ABIS[@]}; i++))
 do
-  if [[ $# -eq 0 ]] || [[ "$1" == "${ARCHS[i]}" ]]; then
+  if [[ $# -eq 0 ]] || [[ "$1" == "${ABIS[i]}" ]]; then
     # Do not build 64 bit arch if ANDROID_API is less than 21 which is
     # the minimum supported API level for 64 bit.
     [[ ${ANDROID_API} < 21 ]] && ( echo "${ABIS[i]}" | grep 64 > /dev/null ) && continue;
-    configure_make "${ARCHS[i]}" "${ABIS[i]}"
+    configure_make "${ABIS[i]}"
   fi
 done

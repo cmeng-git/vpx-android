@@ -18,13 +18,19 @@ All the built libvpx.a and *.h will be placed in the ./output/<ABI>/lib and ./ou
 
 ```
 cd vpx-android
-./build-libvpx4android.sh android  # for armeabi
-./build-libvpx4android.sh android-armeabi #for armeabi-v7a
-./build-libvpx4android.sh android64-arm64 #for arm64_v8a
-./build-libvpx4android.sh android-x86  #for x86
-./build-libvpx4android.sh android64  #for x86_64
-./build-libvpx4android.sh android-mips  #for mips
-./build-libvpx4android.sh android64-mips64 #for mips64
+
+* setup the required libvpx
+./init_libvpx.sh
+
+* use one of the following to build libvpx
+./build-libvpx4android.sh  # for all the ABI's
+./build-libvpx4android.sh armeabi
+./build-libvpx4android.sh armeabi-v7a
+./build-libvpx4android.sh arm64_v8a
+./build-libvpx4android.sh x86
+./build-libvpx4android.sh x86_64
+./build-libvpx4android.sh mips
+./build-libvpx4android.sh mips64
 ```
 
 Copy `lib/armeabi`, `lib/armeabi-v7a` and `lib/x86` etc directories to the android project
@@ -52,13 +58,12 @@ LOCAL_LDLIBS := -lz
 	
 ```
 
-
 License
 -------
 
     ffmpeg, android static library for aTalk VoIP and Instant Messaging client
     
-    Copyright 2014 Eng Chong Meng
+    Copyright 2016 Eng Chong Meng
         
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
