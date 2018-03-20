@@ -17,12 +17,14 @@ You build the static libvpx.a for the various architecture using the command as 
 All the built libvpx.a and *.h will be placed in the ./output/<ABI>/lib and ./output/<ABI>/include respectively
 
 ```
+git clone https://github.com/cmeng-git/vpx-android.git ./vpx-android
 cd vpx-android
+export ANDROID_NDK=/opt/android/android-ndk-r15c
 
-* setup the required libvpx
+# setup the required libvpx
 ./init_libvpx.sh
 
-* use one of the following to build libvpx
+# use one of the following to build libvpx
 ./build-libvpx4android.sh  # for all the ABI's
 ./build-libvpx4android.sh armeabi
 ./build-libvpx4android.sh armeabi-v7a

@@ -57,11 +57,13 @@ configure_make() {
   # --sdk-path=${TOOLCHAIN_PREFIX} must use ${NDK} actual path else cannot find CC for arm64-android-gcc
   # https://bugs.chromium.org/p/webm/issues/detail?id=1476
   # --extra-cflags fix for r16b; but essentially NOP for NDK below r16 but failed arm64-android-gcc
+  # --as=yasm requires by x86 and x86-64 instead of clang
 
   ./configure \
     --sdk-path=${NDK} \
     --prefix=${PREFIX} \
     --target=${TARGET} \
+    --as=yasm \
     --disable-runtime-cpu-detect \
     --disable-docs \
     --enable-static \
@@ -71,11 +73,11 @@ configure_make() {
     --disable-debug \
     --disable-unit-tests \
     --enable-realtime-only \
-    --disable-webm-io || return 0
+    --disable-webm-io || exit 1
 
 #   --extra-cflags="-isystem ${NDK}/sysroot/usr/include/${NDK_ABIARCH} -isystem ${NDK}/sysroot/usr/include"
 
-  if make -j4; then
+  if make -j${HOST_NUM_CORES}; then
     make install
 
     [ -d ${PREFIX}/include ] || mkdir -p ${PREFIX}/include/vpx \
