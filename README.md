@@ -4,17 +4,19 @@
 <thead>
 <tr><td>library</td><td>version</td><td>platform support</td><td>arch support</td></tr>
 </thead>
-<tr><td>libvpx</td><td>1.7.0</td><td>android</td><td>armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64</td></tr>
+<tr><td>libvpx</td><td>1.7.0</td><td>android</td><td>armeabi-v7a arm64-v8a x86 x86_64</td></tr>
 </table>
 
 ### Build For Android
 - Use Android NDK: android-ndk-r15c
 - git clone vpx-android directory into your linux working directory.
-- When you first build-libvpx4android.sh, it pull the latest defined libvpx source from github.
-- You may change e.g LIB_GIT="v1.7.0" to the libvpx version you want to build.
+- When you first build-libvpx4android.sh, it fetches, when enabled, the \<LIB_VPX> source from github.<br>
+  Alternatively manually run e.g.: ./init_libvpx.sh libvpx-1.7.1 (change libvpx version if necessary)
+- You may change e.g LIB_VPX="libvpx-1.7.0" to the libvpx version you want to build. <br>
+  Note: the patches defined in patch_libvpx.sh is for libvpx-1.7.0 and libvpx-1.6.1+ (master-20171013.tar.gz for aTalk)
   
-You build the static libvpx.a for the various architecture using the command as below.
-All the built libvpx.a and *.h will be placed in the ./output/<ABI>/lib and ./output/<ABI>/include respectively
+You build the static libvpx.a for the various architecture using the command as below.<br/>
+All the built libvpx.a and *.h will be placed in the ./output/android/\<ABI>/lib and ./output/android/\<ABI>/include respectively
 
 ```
 git clone https://github.com/cmeng-git/vpx-android.git ./vpx-android
@@ -24,19 +26,16 @@ export ANDROID_NDK=/opt/android/android-ndk-r15c
 # setup the required libvpx
 ./init_libvpx.sh
 
-# use one of the following to build libvpx
-./build-libvpx4android.sh  # for all the ABI's
-./build-libvpx4android.sh armeabi
-./build-libvpx4android.sh armeabi-v7a
-./build-libvpx4android.sh arm64_v8a
-./build-libvpx4android.sh x86
-./build-libvpx4android.sh x86_64
-./build-libvpx4android.sh mips
-./build-libvpx4android.sh mips64
+# use one of the following to build libvpx i.e.
+# for all the ABI's defined in _share.sh
+./build-libvpx4android.sh
+
+# for all the specific <ABI>
+./build-libvpx4android.sh <ABI> 
 ```
 
-Copy `lib/armeabi`, `lib/armeabi-v7a` and `lib/x86` etc directories to the android project
-jni directory e.g. aTalk/jni/vpx
+Copy `.output/android/lib/*`, `./output/include/*` directories to the android project
+jni directory e.g. aTalk/jni/vpx/android
 
 Similarly copy all the include directories to the android project jni directory.
 

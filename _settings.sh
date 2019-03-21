@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# export ANDROID_NDK="/opt/android/android-ndk-r15c" - last working is r15c without errors
+# export ANDROID_NDK="/opt/android/android-ndk-r15c" - last working is r15c without errors for aTalk
 # r16b => Unable to invoke compiler: /opt/android/android-ndk-r16b/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc but build?
 
 if [ "$ANDROID_NDK" = "" ]; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
 	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk"
+	echo "example: export ANDROID_NDK=/opt/android/android-ndk-r15c"
 	exit 1
 fi
 
@@ -19,12 +20,12 @@ NDK_ABI_VERSION=4.9
 # https://developer.android.com/ndk/guides/abis.html#Native code in app packages
 # Android recomended architecture support; others are deprecated
 # ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
-ABIS=("armeabi" "armeabi-v7a" "arm64-v8a" "x86" "x86_64" "mips" "mips64")
+# ABIS=("armeabi" "armeabi-v7a" "arm64-v8a" "x86" "x86_64" "mips" "mips64")
+ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
 
 BASEDIR=`pwd`
 NDK=${ANDROID_NDK}
 HOST_NUM_CORES=$(nproc)
-
 
 # Do not modify any of the NDK_ARCH, CPU and -march unless you are sure.
 # The settings are used by <ARCH>-linux-android-gcc and submodule configure
@@ -49,7 +50,7 @@ configure() {
       NDK_ARCH="arm"
       export ARCH_LINK="-march=armv7-a -Wl,--fix-cortex-a8"
       export NDK_ABIARCH="arm-linux-androideabi"
-      ARCH_FLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -mthumb -mfpu=neon"
+      ARCH_FLAGS="-march=armv7-a -mfloat-abi=softfp -mfpu=neon -mthumb"
       ASFLAGS=""
     ;;
     arm64-v8a)
@@ -58,21 +59,21 @@ configure() {
       NDK_ARCH="arm64"
       export ARCH_LINK=""
       export NDK_ABIARCH="aarch64-linux-android"
-      ARCH_FLAGS="-march=armv8-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -mfpu=neon"
+      ARCH_FLAGS="-march=armv8-a"
       ASFLAGS=""
     ;;
     x86)
       NDK_ARCH="x86"
       export ARCH_LINK=""
       export NDK_ABIARCH="i686-linux-android"
-      ARCH_FLAGS="-O2 -march=i686 -mtune=intel -msse3 -mfpmath=sse -m32"
+      ARCH_FLAGS="-O2 -march=i686 -mtune=intel -msse3 -mfpmath=sse -m32 -fPIC"
       ASFLAGS="-D__ANDROID__"
     ;;
     x86_64)
       NDK_ARCH="x86_64"
       export ARCH_LINK=""
       export NDK_ABIARCH="x86_64-linux-android"
-      ARCH_FLAGS="-O2 -march=x86-64 -mtune=intel -msse4.2 -mpopcnt -m64"
+      ARCH_FLAGS="-O2 -march=x86-64 -mtune=intel -msse4.2 -mpopcnt -m64 -fPIC"
       ASFLAGS="-D__ANDROID__"
     ;;
     mips)
@@ -122,7 +123,7 @@ configure() {
   echo "use NDK=${NDK}"
   echo "export ABI=${ABI}"
   echo "export CROSS_PREFIX=${CROSS_PREFIX}"
-  # echo "export SYSROOT=${SYSROOT}"
+  echo "export SYSROOT=${SYSROOT}"
   echo "export CC=${CC}"
   echo "export CXX=${CXX}"
   echo "export LINK=${LINK}"
