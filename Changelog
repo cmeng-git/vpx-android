@@ -2,6 +2,13 @@
 # releases are sorted from youngest to oldest.
 
 #=============================================================
+version 1.1.2 (2019/04/20):
+- Cleanup all build scripts for libvpx v1.8.0
+- use libvpx v1.8.0 for aTalk
+- add option --disable-avx2 to fix x86_64 VP8 encoder problem
+  see https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1
+
+#=============================================================
 version 1.1.1 (2019/04/13):
 - Cleanup all build scripts and README
 
