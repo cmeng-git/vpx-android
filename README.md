@@ -44,7 +44,15 @@ export ANDROID_NDK=/opt/android/android-ndk-r15c
 Copy the static libs and includes in `./output/android/<ABI>` directories to the android project
 jni directory i.e. aTalk/jni/vpx/android/\<ABI>
 
-Note: All information given below is for reference only. See aTalk/jni for its implementation.
+```
+Note:
+## Standalone toolchains work for ABIS=("arm64-v8a" "x86" "x86_64")
+ABIS "armeabi-v7a" has errors i.e.
+clang50: error: unsupported option '--defsym'
+clang50: error: no such file or directory: 'ARCHITECTURE=7'
+```
+
+All information given below is for reference only. See aTalk/jni for its implementation.
 
 ##### ============================================
 #### Android.mk makefile - for other project

@@ -48,9 +48,13 @@ HOST_NUM_CORES=$(nproc)
 
 # https://gcc.gnu.org/onlinedocs/gcc-4.9.1/gcc/Optimize-Options.html
 # Note: vpx with ABIs x86 and x86_64 build has error with option -fstack-protector-all
-CFLAGS_="-fpic -fpie -ffunction-sections -funwind-tables -fstack-protector -fno-strict-aliasing -fno-strict-overflow -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2"
+# Note: final libraries built is 20~33% bigger in size when below additional options are specified
+# CFLAGS_="-DANDROID -fpic -fpie -ffunction-sections -funwind-tables -fstack-protector -fno-strict-aliasing -fno-strict-overflow -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2"
+CFLAGS_="-DANDROID -fpic -fpie"
 # Enable report-all for earlier detection of errors instead at later stage
-LDFLAGS_="-Wl,-z,defs -Wl,--unresolved-symbols=report-all"
+# /home/cmeng/workspace/ndk/vpx-android/armeabi-v7a-android-toolchain/bin/arm-linux-androideabi-ld: -Wl,-z,defs -Wl,--unresolved-symbols=report-all: unknown option
+# LDFLAGS_="-Wl,-z,defs -Wl,--unresolved-symbols=report-all"
+LDFLAGS_=""
 
 # Do not modify any of the NDK_ARCH, CPU and -march unless you are sure.
 # The settings are used by <ARCH>-linux-android-gcc and submodule configure
@@ -60,7 +64,6 @@ LDFLAGS_="-Wl,-z,defs -Wl,--unresolved-symbols=report-all"
 
 configure() {
   ABI=$1;
-  TOOLCHAIN_PREFIX=${BASEDIR}/${ABI}-android-toolchain
 
   case $ABI in
     # Deprecated in r16. Will be removed in r17
@@ -77,7 +80,7 @@ configure() {
       NDK_ARCH="arm"
       NDK_ABIARCH="arm-linux-androideabi"
       CFLAGS="${CFLAGS_} -march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
-      LDFLAGS="${LDFLAGS_} -march=armv7-a -Wl,--fix-cortex-a8"
+      LDFLAGS="${LDFLAGS_} -march=armv7-a" # -Wl,--fix-cortex-a8" not valid option
       ASFLAGS=""
     ;;
     arm64-v8a)
@@ -86,7 +89,8 @@ configure() {
       NDK_ARCH="arm64"
       NDK_ABIARCH="aarch64-linux-android"
       CFLAGS="${CFLAGS_} -march=armv8-a"
-      LDFLAGS="${LDFLAGS_} -march=armv8-a"
+      # Supported emulations: aarch64linux aarch64elf aarch64elf32 aarch64elf32b aarch64elfb armelf armelfb aarch64linuxb aarch64linux32 aarch64linux32b armelfb_linux_eabi armelf_linux_eabi
+      LDFLAGS="${LDFLAGS_}" # -march=arch64linux" not valid also
       ASFLAGS=""
     ;;
     x86)
@@ -119,6 +123,22 @@ configure() {
     ;;
   esac
 
+  TOOLCHAIN_PREFIX=${BASEDIR}/android-toolchain
+  NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
+
+  # bin/python-config.sh
+  # prefix_build="/usr/local/google/buildbot/src/android/ndk-r15-release/out/build/buildhost/linux-x86_64/install/host-tools"
+  # prefix_build="/usr/local/google/buildbot/src/android/ndk-release-r15/out/build/buildhost/linux-x86_64/install/host-tools"
+  if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
+      rm -rf ${TOOLCHAIN_PREFIX}
+  #else
+  #  TC_RELEASE="$(grep 'prefix_build=' < ${TOOLCHAIN_PREFIX}/bin/python-config.sh | sed 's/^.*\/android\/ndk[-release]*\-\(r[0-9][0-9]\).*$/ndk-\1/')"
+  #  if [[ ! ${ANDROID_NDK} =~ ${TC_RELEASE} ]]; then
+  #    rm -rf ${TOOLCHAIN_PREFIX}
+  #    echo "Rebuild standalone toolchains for ${NDK_ABIARCH}"
+  #  fi
+  fi
+
   # cmeng: must ensure AS JNI uses the same STL library or "system"
   [[ -d ${TOOLCHAIN_PREFIX} ]] || python ${NDK}/build/tools/make_standalone_toolchain.py \
      --arch ${NDK_ARCH} \
@@ -126,7 +146,6 @@ configure() {
      --stl libc++ \
      --install-dir=${TOOLCHAIN_PREFIX}
 
-  NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
 
   # Define the install directory of the libs and include files etc
   PREFIX=${BASEDIR}/output/android/${ABI}
@@ -138,7 +157,7 @@ configure() {
   export CPPFLAGS="${CFLAGS}"
   export CXXFLAGS="${CFLAGS} -std=c++11"
   export ASFLAGS="${ASFLAGS}"
-  export LDFLAGS="${LDFLAGS} -L${NDK_SYSROOT}"
+  export LDFLAGS="${LDFLAGS} -L${NDK_SYSROOT}/usr/lib"
 
   export AR="${CROSS_PREFIX}ar"
   export AS="${CROSS_PREFIX}clang"

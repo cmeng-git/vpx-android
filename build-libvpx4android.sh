@@ -116,6 +116,12 @@ configure_make() {
   # Need --disable-avx2 to fix x86_64 problem i.e.
   # org.atalk.android A/libc: Fatal signal 4 (SIGILL), code 2 (ILL_ILLOPN), fault addr 0x77b2ac1757e6 in tid 20780 (Loop thread: ne), pid 20363 (g.atalk.android)
   # see https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1
+  # OR use option --enable-runtime-cpu-detect for x86/x86_64 ABIS platforms
+
+CPU_DETECT="--disable-runtime-cpu-detect"
+if [[ $1 =~ x86.* ]]; then
+   CPU_DETECT="--enable-runtime-cpu-detect"
+fi
 
   ./configure \
     --sdk-path=${NDK} \
@@ -123,9 +129,9 @@ configure_make() {
     --libc=${NDK_SYSROOT} \
     --prefix=${PREFIX} \
     --target=${TARGET} \
+    ${CPU_DETECT} \
     --as=yasm \
     --enable-pic \
-    --disable-runtime-cpu-detect \
     --disable-docs \
     --enable-static \
     --enable-libyuv \
@@ -133,7 +139,6 @@ configure_make() {
     --disable-tools \
     --disable-debug \
     --disable-unit-tests \
-    --disable-avx2 \
     --enable-realtime-only \
     --enable-vp8 \
     --enable-vp9 \
