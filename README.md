@@ -31,7 +31,7 @@ cd vpx-android
 export ANDROID_NDK=/opt/android/android-ndk-r15c
 
 ## setup the required libvpx; default "libvpx-1.8.0" or change LIB_GIT in ./init_libvpx.sh
-./init_libvpx.sh
+./init_libvpx.sh (Optional as next command will load the source if not found)
 
 ## use one of the following to build libvpx i.e.
 #a. for all the ABI's defined in _settings.sh

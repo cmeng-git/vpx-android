@@ -70,8 +70,8 @@ configure() {
     armeabi)
       NDK_ARCH="arm"
       NDK_ABIARCH="arm-linux-androideabi"
-      ARCH_FLAGS="-march=armv5 -marm -finline-limit=64"
-      ARCH_LINK=""
+      CFLAGS="-march=armv5 -marm -finline-limit=64"
+      LDFLAGS=""
       ASFLAGS=""
     ;;
     # Standalone toolchains error.
@@ -145,7 +145,6 @@ configure() {
      --api ${ANDROID_API} \
      --stl libc++ \
      --install-dir=${TOOLCHAIN_PREFIX}
-
 
   # Define the install directory of the libs and include files etc
   PREFIX=${BASEDIR}/output/android/${ABI}
