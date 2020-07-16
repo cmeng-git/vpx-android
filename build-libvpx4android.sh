@@ -139,7 +139,7 @@ if [[ $1 =~ x86.* ]]; then
 fi
 
 # When use --sdk-path option for libvpx v1.8.0; must use android-ndk-r17c or lower
-# For libvpx v1.8: in order to use standalone toolchanis, must not specified --sdk-path (option removed)
+# For libvpx v1.8.2: in order to use standalone toolchanis, must not specified --sdk-path (option removed)
 #    --sdk-path=${NDK}
 
   ./configure \
