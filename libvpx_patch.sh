@@ -1,6 +1,6 @@
 #!/bin/bash
 # set -x
-# Applying required patches for libvpx
+# Applying required patches for the libvpx
 
 if [[ $# -eq 1 ]]; then
   LIB_VPX=$1
@@ -11,13 +11,14 @@ fi
 if [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
   version=`"${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}"`
 else
-  version='v1.8.0'
+  version='v1.10.0'
 fi
 
 echo -e "\n*** Applying patches for: ${LIB_VPX} (${version}) ***"
 
 # ===============================
 # libvpx patches for version 1.8.0, 1.7.0 and 1.6.1+
+# None is applicable and are skipped for the libvpx version 1.10.0
 # ===============================
 patch  -p0 -N --dry-run --silent -f ./${LIB_VPX}/build/make/configure.sh < ./patches/10.libvpx_configure.sh.patch 1>/dev/null
 if [[ $? -eq 0 ]]; then

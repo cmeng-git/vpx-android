@@ -18,12 +18,12 @@
 # set -x
 
 # When use --sdk-path option for libvpx v1.8.0; must use android-ndk-r17c or lower
-# May use android-ndk-r18b" - libvpx v1.8.2 is working with r18b without error
+# May use android-ndk-r18b" - libvpx v1.10.0 and libvpx v1.8.2 are working with r18b without error
 
 if [[ $ANDROID_NDK = "" ]]; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
 	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk"
-	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r17c"
+	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r18b"
 	exit 1
 fi
 set -u

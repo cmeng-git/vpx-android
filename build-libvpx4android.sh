@@ -20,9 +20,10 @@ set -u
 # aTalk v1.8.1 and below uses libvpx-master i.e. 1.6.1+ (10/13/2017)
 # aTalk v1.8.2 uses libvpx-1.8.0
 # aTalk v2.3.2 uses libvpx-1.8.2
+# aTalk v2.6.1 uses libvpx-1.10.0
 
 LIB_VPX="libvpx"
-LIB_GIT=v1.8.2
+LIB_GIT=v1.10.0
 
 ## Both problems #1 & #2 below have been fixed by patches from: https://android.googlesource.com/platform/external/libvpx/+/ca30a60d2d6fbab4ac07c63bfbf7bbbd1fe6a583
 ## However the compiled libjnvpx.so has problem when exec on x86_64 android platform:
@@ -42,6 +43,7 @@ LIB_GIT=v1.8.2
 [[ -d ${LIB_VPX} ]] || ./init_libvpx.sh ${LIB_GIT}
 
 # Applying required patches to libvpx-1.8.x, libvpx-1.7.0 or libvpx-1.6.1+
+# No patch is needed for v1.10.0
 ./libvpx_patch.sh ${LIB_VPX}
 
 if [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
