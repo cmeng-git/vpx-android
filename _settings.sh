@@ -20,7 +20,7 @@
 # When use --sdk-path option for libvpx v1.8.0; must use android-ndk-r17c or lower
 # May use android-ndk-r18b" - libvpx v1.10.0 and libvpx v1.8.2 are working with r18b without error
 
-if [[ $ANDROID_NDK = "" ]]; then
+if [[ -z $ANDROID_NDK ]]; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
 	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk"
 	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r18b"
@@ -52,7 +52,7 @@ HOST_NUM_CORES=$(nproc)
 CFLAGS_="-DANDROID -fpic -fpie"
 # Enable report-all for earlier detection of errors instead at later stage
 # /home/cmeng/workspace/ndk/vpx-android/armeabi-v7a-android-toolchain/bin/arm-linux-androideabi-ld: -Wl,-z,defs -Wl,--unresolved-symbols=report-all: unknown option
-# Not compatible with libvpx v.1.8.2
+# Not compatible with libvpx v.1.8.2+
 # LDFLAGS_="-Wl,-z,defs -Wl,--unresolved-symbols=report-all"
 LDFLAGS_=""
 
@@ -167,7 +167,7 @@ configure() {
      --install-dir=${TOOLCHAIN_PREFIX}
 
   # Define the install-directory of the libs and include files etc
-  PREFIX=${BASEDIR}/output/android/${ABI}
+  PREFIX=${BASEDIR}/android/${ABI}
 
   # Add the standalone toolchain to the search path.
   export PATH=${TOOLCHAIN_PREFIX}/bin:$PATH

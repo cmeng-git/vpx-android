@@ -52,12 +52,12 @@ fi
 
 # Unarchive library, then configure and make for specified architectures
 configure_make() {
-  pushd "${LIB_VPX}"
+  pushd "${LIB_VPX}" || exit
   ABI=$1;
   echo -e "\n** BUILD STARTED: ${LIB_VPX} (${version}) for ${ABI} **"
 
   make clean
-  configure $*
+  configure "$@"
   case ${ABI} in
     # libvpx does not provide armv5 build option
     armeabi)
@@ -113,7 +113,7 @@ configure_make() {
   # must specified -libc from standalone toolchains, libvpx configure.sh cannot get the right arch to use
 
   # SDK toolchains has error with ndk-r18b; however ndk-R17c and ndk-r16b are ok (gcc/g++)
-  # SDK toolchains ndk-r18b is working with libvpx v1.8.2 without the sdk option
+  # SDK toolchains ndk-r18b is working with libvpx v1.10.0 & v1.8.2 without the sdk option
 
   # Standalone toolchains built has problem with ABIS="armeabi-v7a"
   # /tmp/vpx-conf-31901-2664.o(.ARM.exidx.text.main+0x0): error: undefined reference to '__aeabi_unwind_cpp_pr0'
@@ -143,6 +143,7 @@ fi
 # When use --sdk-path option for libvpx v1.8.0; must use android-ndk-r17c or lower
 # For libvpx v1.8.2: in order to use standalone toolchanis, must not specified --sdk-path (option removed)
 #    --sdk-path=${NDK}
+# --enable-vp9-highbitdepth
 
   ./configure \
     --extra-cflags="-isystem ${NDK_SYSROOT}/usr/include/${NDK_ABIARCH} -isystem ${NDK_SYSROOT}/usr/include" \
@@ -161,11 +162,12 @@ fi
     --disable-unit-tests \
     --enable-realtime-only \
     --enable-vp8 --enable-vp9 \
-    --enable-vp9-postproc --enable-vp9-highbitdepth \
+    --enable-vp9-postproc \
+    --enable-vp9-highbitdepth \
     --disable-webm-io || exit 1
 
   make -j${HOST_NUM_CORES} install
-  popd
+  popd || exit
 }
 
 for ((i=0; i < ${#ABIS[@]}; i++))
