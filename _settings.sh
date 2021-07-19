@@ -20,19 +20,20 @@
 # When use --sdk-path option for libvpx v1.8.0; must use android-ndk-r17c or lower
 # May use android-ndk-r18b" - libvpx v1.10.0 and libvpx v1.8.2 are working with r18b without error
 
-if [[ -z $ANDROID_NDK ]]; then
+export ANDROID_NDK=/opt/android/android-ndk-r18b
+if [[ -z $ANDROID_NDK ]] || [[ ! -d $ANDROID_NDK ]] ; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
-	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk"
+	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk-rxx"
 	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r18b"
 	exit 1
 fi
+
 set -u
 
 # Never mix two api level to build static library for use on the same apk.
 # Set to API:21 for aTalk 64-bit architecture support
 # Does not build 64-bit arch if ANDROID_API is less than 21 i.e. the minimum supported API level for 64-bit.
 ANDROID_API=21
-NDK_ABI_VERSION=4.9
 
 # Do not change naming convention of the ABIS; see:
 # https://developer.android.com/ndk/guides/abis.html#Native code in app packages
