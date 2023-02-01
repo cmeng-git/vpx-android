@@ -8,6 +8,8 @@
 </table>
 
 ### Build For Android
+- Note: Please refer to https://github.com/cmeng-git/atalk-android/tree/master/aTalk/jni for the latest
+  updated scripts and build instructions. This repository is not further maintained since v1.1.7.
 - Follow the instructions below to build libvpx for android
 - aTalk v2.6.1 release is compatible with libvpx-1.10.0 (use android-ndk-r18b) <br/>
 - aTalk v1.8.2 release is compatible with libvpx-1.8.0 (must use android-ndk-r17c or lower) <br/>
@@ -24,6 +26,7 @@
 - When you first exec build-libvpx4android.sh, it applies the required patches to libvpx<br/>
   Note: the patches defined in libvpx_patch.sh is for libvpx-1.8.0+, libvpx-1.7.0 and libvpx-1.6.1+<br/>
   
+
 The ./build-libvpx4android.sh script builds the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>
 i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
 All the built libvpx.a and *.h are installed in the ./android/&lt;ABI>/lib and include respectively
@@ -101,7 +104,6 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
 
 
 
